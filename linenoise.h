@@ -46,19 +46,19 @@ typedef struct linenoiseCompletions {
 /*
  * The callback type for tab completion handlers.
  */
-typedef void(linenoiseCompletionCallback)(const char *, linenoiseCompletions *);
+typedef void(linenoiseCompletionCallback)(const char *prefix, linenoiseCompletions *comp, void *userdata);
 
 /*
  * Sets the current tab completion handler and returns the previous one, or NULL
  * if no prior one has been set.
  */
-linenoiseCompletionCallback * linenoiseSetCompletionCallback(linenoiseCompletionCallback *);
+linenoiseCompletionCallback * linenoiseSetCompletionCallback(linenoiseCompletionCallback *comp, void *userdata);
 
 /*
  * Adds a copy of the given string to the given completion list. The copy is owned
  * by the linenoiseCompletions object.
  */
-void linenoiseAddCompletion(linenoiseCompletions *, const char *);
+void linenoiseAddCompletion(linenoiseCompletions *comp, const char *str);
 #endif
 
 /*

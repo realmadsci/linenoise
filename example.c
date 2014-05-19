@@ -4,7 +4,7 @@
 #include "linenoise.h"
 
 #ifndef NO_COMPLETION
-void completion(const char *buf, linenoiseCompletions *lc) {
+void completion(const char *buf, linenoiseCompletions *lc, void *userdata) {
     if (buf[0] == 'h') {
         linenoiseAddCompletion(lc,"hello");
         linenoiseAddCompletion(lc,"hello there");
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
 #ifndef NO_COMPLETION
     /* Set the completion callback. This will be called every time the
      * user uses the <tab> key. */
-    linenoiseSetCompletionCallback(completion);
+    linenoiseSetCompletionCallback(completion, NULL);
 #endif
 
     /* Load history from file. The history file is just a plain text file

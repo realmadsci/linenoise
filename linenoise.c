@@ -1063,6 +1063,7 @@ static int insert_chars(struct current *current, int pos, const char *chars)
 
 #ifndef NO_COMPLETION
 static linenoiseCompletionCallback *completionCallback = NULL;
+static void *completionUserdata = NULL;
 
 static void beep() {
 #ifdef USE_TERMIOS
@@ -1082,7 +1083,7 @@ static int completeLine(struct current *current) {
     linenoiseCompletions lc = { 0, NULL };
     int c = 0;
 
-    completionCallback(current->buf,&lc);
+    completionCallback(current->buf,&lc,completionUserdata);
     if (lc.len == 0) {
         beep();
     } else {
@@ -1135,9 +1136,10 @@ static int completeLine(struct current *current) {
 /* Register a callback function to be called for tab-completion.
    Returns the prior callback so that the caller may (if needed)
    restore it when done. */
-linenoiseCompletionCallback * linenoiseSetCompletionCallback(linenoiseCompletionCallback *fn) {
+linenoiseCompletionCallback * linenoiseSetCompletionCallback(linenoiseCompletionCallback *fn, void *userdata) {
     linenoiseCompletionCallback * old = completionCallback;
     completionCallback = fn;
+    completionUserdata = userdata;
     return old;
 }
 
