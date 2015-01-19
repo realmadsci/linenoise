@@ -320,7 +320,12 @@ static void eraseEol(struct current *current)
 
 static void setCursorPos(struct current *current, int x)
 {
-    fd_printf(current->fd, "\r\x1b[%dC", x);
+    if (x == 0) {
+        cursorToLeft(current);
+    }
+    else {
+        fd_printf(current->fd, "\r\x1b[%dC", x);
+    }
 }
 
 /**
