@@ -70,6 +70,11 @@ void linenoiseAddCompletion(linenoiseCompletions *, const char *);
  */
 char *linenoise(const char *prompt);
 
+/**
+ * Clear the screen.
+ */
+void linenoiseClearScreen(void);
+
 /*
  * Adds a copy of the given line of the command history.
  */

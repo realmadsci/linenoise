@@ -293,9 +293,9 @@ static void fd_printf(int fd, const char *format, ...)
     IGNORE_RC(write(fd, buf, n));
 }
 
-static void clearScreen(struct current *current)
+void linenoiseClearScreen(void)
 {
-    fd_printf(current->fd, "\x1b[H\x1b[2J");
+    fd_printf(STDOUT_FILENO, "\x1b[H\x1b[2J");
 }
 
 static void cursorToLeft(struct current *current)
@@ -632,17 +632,19 @@ static void disableRawMode(struct current *current)
     SetConsoleMode(current->inh, orig_consolemode);
 }
 
-static void clearScreen(struct current *current)
+void linenoiseClearScreen(void)
 {
+    HANDLE fh = GetStdHandle(STD_OUTPUT_HANDLE);
+
     COORD topleft = { 0, 0 };
     DWORD n;
 
-    FillConsoleOutputCharacter(current->outh, ' ',
+    FillConsoleOutputCharacter(fh, ' ',
         current->cols * current->rows, topleft, &n);
-    FillConsoleOutputAttribute(current->outh,
+    FillConsoleOutputAttribute(fh,
         FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN,
         current->cols * current->rows, topleft, &n);
-    SetConsoleCursorPosition(current->outh, topleft);
+    SetConsoleCursorPosition(fh, topleft);
 }
 
 static void cursorToLeft(struct current *current)
@@ -1430,7 +1432,7 @@ history_navigation:
             }
             break;
         case ctrl('L'): /* Ctrl+L, clear screen */
-            clearScreen(current);
+            linenoiseClearScreen();
             /* Force recalc of window size for serial terminals */
             current->cols = 0;
             refreshLine(current->prompt, current);
