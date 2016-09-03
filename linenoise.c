@@ -634,17 +634,22 @@ static void disableRawMode(struct current *current)
 
 void linenoiseClearScreen(void)
 {
-    HANDLE fh = GetStdHandle(STD_OUTPUT_HANDLE);
+    /* XXX: This is ugly. Should just have the caller pass a handle */
+    struct current current;
 
-    COORD topleft = { 0, 0 };
-    DWORD n;
+    current.outh = GetStdHandle(STD_OUTPUT_HANDLE);
 
-    FillConsoleOutputCharacter(fh, ' ',
-        current->cols * current->rows, topleft, &n);
-    FillConsoleOutputAttribute(fh,
-        FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN,
-        current->cols * current->rows, topleft, &n);
-    SetConsoleCursorPosition(fh, topleft);
+    if (getWindowSize(&current) == 0) {
+        COORD topleft = { 0, 0 };
+        DWORD n;
+
+        FillConsoleOutputCharacter(current.outh, ' ',
+            current.cols * current.rows, topleft, &n);
+        FillConsoleOutputAttribute(current.outh,
+            FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN,
+            current.cols * current.rows, topleft, &n);
+        SetConsoleCursorPosition(current.outh, topleft);
+    }
 }
 
 static void cursorToLeft(struct current *current)
