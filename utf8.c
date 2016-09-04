@@ -212,6 +212,10 @@ static int utf8_in_range(const struct utf8range *range, int num, int ch)
 
 int utf8_width(int ch)
 {
+    /* short circuit for common case */
+    if (isascii(ch)) {
+        return 1;
+    }
     if (utf8_in_range(unicode_range_combining, ARRAYSIZE(unicode_range_combining), ch)) {
         return 0;
     }
