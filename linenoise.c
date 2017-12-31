@@ -360,7 +360,7 @@ static int fd_read_char(int fd, int timeout)
 static int fd_read(struct current *current)
 {
 #ifdef USE_UTF8
-    char buf[4];
+    char buf[MAX_UTF8_LEN];
     int n;
     int i;
     int c;
@@ -369,7 +369,7 @@ static int fd_read(struct current *current)
         return -1;
     }
     n = utf8_charlen(buf[0]);
-    if (n < 1 || n > 3) {
+    if (n < 1) {
         return -1;
     }
     for (i = 1; i < n; i++) {
@@ -377,7 +377,6 @@ static int fd_read(struct current *current)
             return -1;
         }
     }
-    buf[n] = 0;
     /* decode and return the character */
     utf8_tounicode(buf, &c);
     return c;
@@ -814,6 +813,7 @@ static int getWindowSize(struct current *current)
 }
 #endif
 
+#ifndef utf8_getchars
 static int utf8_getchars(char *buf, int c)
 {
 #ifdef USE_UTF8
@@ -823,6 +823,7 @@ static int utf8_getchars(char *buf, int c)
     return 1;
 #endif
 }
+#endif
 
 /**
  * Returns the unicode character at the given offset,
@@ -1006,7 +1007,7 @@ static int remove_char(struct current *current, int pos)
  */
 static int insert_char(struct current *current, int pos, int ch)
 {
-    char buf[3];
+    char buf[MAX_UTF8_LEN];
     int n = utf8_getchars(buf, ch);
 
     if (has_room(current, n) && pos >= 0 && pos <= current->chars) {
@@ -1319,7 +1320,8 @@ process_char:
                         skipsame = 1;
                     }
                     else if (c >= ' ') {
-                        if (rlen >= (int)sizeof(rbuf) + 3) {
+                        /* >= here to allow for null terminator */
+                        if (rlen >= (int)sizeof(rbuf) - MAX_UTF8_LEN) {
                             continue;
                         }
 
@@ -1383,7 +1385,7 @@ process_char:
             }
             break;
         case ctrl('V'):    /* ctrl-v */
-            if (has_room(current, 3)) {
+            if (has_room(current, MAX_UTF8_LEN)) {
                 /* Insert the ^V first */
                 if (insert_char(current, current->pos, c)) {
                     refreshLine(current->prompt, current);

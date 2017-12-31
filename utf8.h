@@ -16,6 +16,8 @@ extern "C" {
 #ifndef USE_UTF8
 #include <ctype.h>
 
+#define MAX_UTF8_LEN 1
+
 /* No utf-8 support. 1 byte = 1 char */
 #define utf8_strlen(S, B) ((B) < 0 ? (int)strlen(S) : (B))
 #define utf8_strwidth(S, B) utf8_strlen((S), (B))
@@ -25,6 +27,9 @@ extern "C" {
  #define utf8_width(C) 1
 
 #else
+
+#define MAX_UTF8_LEN 4
+
 /**
  * Converts the given unicode codepoint (0 - 0x1fffff) to utf-8
  * and stores the result at 'p'.
