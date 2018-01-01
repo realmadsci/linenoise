@@ -129,6 +129,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <sys/types.h>
 
@@ -1230,6 +1231,16 @@ process_char:
         case ctrl('C'):     /* ctrl-c */
             errno = EAGAIN;
             return -1;
+        case ctrl('Z'):     /* ctrl-z */
+#ifdef SIGTSTP
+            /* send ourselves SIGSUSP */
+            disableRawMode(current);
+            raise(SIGTSTP);
+            /* and resume */
+            enableRawMode(current);
+            refreshLine(current->prompt, current);
+#endif
+            continue;
         case 127:   /* backspace */
         case ctrl('H'):
             if (remove_char(current, current->pos - 1) == 1) {
