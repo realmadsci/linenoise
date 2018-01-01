@@ -1,5 +1,17 @@
 # Linenoise
 
+## What's different in this fork?
+
+- Win32 console
+- full utf8 support (what about utf8 on windows)
+- insert control characters
+- no hints yet
+- now with multiline
+
+## Original README below
+
+Can a line editing library be 20k lines of code?
+
 A minimal, zero-config, BSD licensed, readline replacement.
 
 News: linenoise now includes minimal completion support, thanks to Pieter Noordhuis (@pnoordhuis).

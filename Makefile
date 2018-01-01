@@ -1,13 +1,13 @@
-all:  linenoise_example linenoise_utf8_example linenoise_cpp_example
+CFLAGS += -Wall -W -Os -g -Wno-unused-parameter
+CC := gcc
 
-linenoise_example: linenoise.h linenoise.c example.c
-	$(CC) -Wall -W -Os -g -o $@ linenoise.c example.c
+all:  linenoise_example linenoise_utf8_example
 
-linenoise_utf8_example: linenoise.c utf8.c example.c
-	$(CC) -DNO_COMPLETION -DUSE_UTF8 -Wall -W -Os -g -o $@ linenoise.c utf8.c example.c
+linenoise_example: linenoise.h linenoise.c  stringbuf.c stringbuf.h linenoise-win32.c example.c
+	$(CC) $(CFLAGS) -o $@ linenoise.c example.c stringbuf.c
 
-linenoise_cpp_example: linenoise.h linenoise.c
-	g++ -Wall -W -Os -g -o $@ linenoise.c example.c
+linenoise_utf8_example: linenoise.h linenoise.c  stringbuf.c stringbuf.h utf8.c linenoise-win32.c
+	$(CC) $(CFLAGS) -DUSE_UTF8 -o $@ linenoise.c utf8.c example.c stringbuf.c
 
 clean:
-	rm -f linenoise_example linenoise_utf8_example linenoise_cpp_example *.o
+	rm -f linenoise_example linenoise_utf8_example *.o
