@@ -127,6 +127,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <assert.h>
 #include <errno.h>
 #include <string.h>
 #include <signal.h>
@@ -290,6 +291,8 @@ static void fd_printf(int fd, const char *format, ...)
 
     va_start(args, format);
     n = vsnprintf(buf, sizeof(buf), format, args);
+    /* This will never happen because we are sure to use fd_printf() for short sequences */
+    assert(n < sizeof(buf));
     va_end(args);
     IGNORE_RC(write(fd, buf, n));
 }
