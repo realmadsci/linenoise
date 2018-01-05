@@ -192,7 +192,8 @@ struct current {
     int x;      /* Current column during output */
     int y;      /* Current row */
 #ifdef USE_UTF8
-    WORD ubuf[132];  /* Accumulates utf16 output */
+    #define UBUF_MAX_CHARS 132
+    WORD ubuf[UBUF_MAX_CHARS + 1];  /* Accumulates utf16 output - one extra for final surrogate pairs */
     int ubuflen;      /* length used in ubuf */
     int ubufcols;     /* how many columns are represented by the chars in ubuf? */
 #endif
