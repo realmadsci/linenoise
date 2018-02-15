@@ -142,7 +142,9 @@
 #include <sys/types.h>
 
 #include "linenoise.h"
+#ifndef STRINGBUF_H
 #include "stringbuf.h"
+#endif
 #include "utf8.h"
 
 #define LINENOISE_DEFAULT_HISTORY_MAX_LEN 100

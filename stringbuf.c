@@ -4,7 +4,9 @@
 #include <ctype.h>
 #include <assert.h>
 
+#ifndef STRINGBUF_H
 #include "stringbuf.h"
+#endif
 #ifdef USE_UTF8
 #include "utf8.h"
 #endif
