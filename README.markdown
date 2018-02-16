@@ -8,6 +8,25 @@
 - no hints yet
 - now with multiline
 
+## How do I include linenoise line editing support in my application?
+
+From the Makefile:
+
+  linenoise-ship.c simplifies delivery of linenoise support
+
+  simple copy linenoise-ship.c to linenoise.c in your application, and also linenoise.h
+
+  * If you want win32 support, also copy linenoise-win32.c
+  * If you never want to support utf-8, you can omit utf8.h and utf8.c
+
+To enable utf-8 support, define USE_UTF8
+
+## Where do I get it?
+
+Get it here: [https://github.com/msteveb/linenoise](https://github.com/msteveb/linenoise)
+
+--------------------------------------------------------
+
 ## Original README below
 
 Can a line editing library be 20k lines of code?
