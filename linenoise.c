@@ -1349,7 +1349,7 @@ static void capture_chars(struct current *current, int pos, int nchars)
         int offset = utf8_index(sb_str(current->buf), pos);
         int nbytes = utf8_index(sb_str(current->buf) + offset, nchars);
 
-        if (nbytes) {
+        if (nbytes > 0) {
             if (current->capture) {
                 sb_clear(current->capture);
             }
@@ -1732,6 +1732,7 @@ history_navigation:
 int linenoiseColumns(void)
 {
     struct current current;
+    current.output = NULL;
     enableRawMode (&current);
     getWindowSize (&current);
     disableRawMode (&current);
