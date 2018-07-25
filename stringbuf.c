@@ -47,7 +47,6 @@ void sb_append(stringbuf *sb, const char *str)
 
 void sb_append_len(stringbuf *sb, const char *str, int len)
 {
-	int utf8_strlen(const char *str, int bytelen);
 	if (sb->remaining < len + 1) {
 		sb_realloc(sb, sb->last + len + 1 + SB_INCREMENT);
 	}
