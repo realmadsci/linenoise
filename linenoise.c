@@ -1584,7 +1584,8 @@ static int linenoiseEdit(struct current *current) {
         switch(c) {
         case SPECIAL_NONE:
             break;
-        case '\r':    /* enter */
+        case '\r':    /* enter/CR */
+        case '\n':    /* LF */
             history_len--;
             free(history[history_len]);
             current->pos = sb_chars(current->buf);
