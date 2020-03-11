@@ -5,6 +5,7 @@
 
 #ifndef NO_COMPLETION
 void completion(const char *buf, linenoiseCompletions *lc, void *userdata) {
+    (void)userdata;
     if (buf[0] == 'h') {
         linenoiseAddCompletion(lc,"hello");
         linenoiseAddCompletion(lc,"hello there");
@@ -12,6 +13,7 @@ void completion(const char *buf, linenoiseCompletions *lc, void *userdata) {
 }
 
 char *hints(const char *buf, int *color, int *bold, void *userdata) {
+    (void)userdata;
     if (!strcasecmp(buf,"hello")) {
         *color = 35;
         *bold = 0;

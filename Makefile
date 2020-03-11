@@ -1,4 +1,4 @@
-CFLAGS += -Wall -W -Os -g -Wno-unused-parameter
+CFLAGS += -Wall -W -Os -g
 CC ?= gcc
 
 all:  linenoise_example linenoise_utf8_example
