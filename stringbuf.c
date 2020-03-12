@@ -1,3 +1,10 @@
+/**
+ * resizable string buffer
+ *
+ * (c) 2017-2020 Steve Bennett <steveb@workware.net.au>
+ *
+ * See utf8.c for licence details.
+ */
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
