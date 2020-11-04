@@ -145,7 +145,9 @@
 #ifndef STRINGBUF_H
 #include "stringbuf.h"
 #endif
+#ifndef UTF8_UTIL_H
 #include "utf8.h"
+#endif
 
 #define LINENOISE_DEFAULT_HISTORY_MAX_LEN 100
 

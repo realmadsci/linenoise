@@ -15,7 +15,9 @@
 #include "stringbuf.h"
 #endif
 #ifdef USE_UTF8
+#ifndef UTF8_UTIL_H
 #include "utf8.h"
+#endif
 #endif
 
 #define SB_INCREMENT 200
