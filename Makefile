@@ -19,5 +19,5 @@ ship: linenoise-ship.c
 # - If you want win32 support, also copy linenoise-win32.c
 # - If you never want to support utf-8, you can omit utf8.h and utf8.c
 
-linenoise-ship.c: stringbuf.h stringbuf.c utf8.h utf8.c linenoise.c
+linenoise-ship.c: utf8.h utf8.c stringbuf.h stringbuf.c linenoise.c
 	cat $^ >$@
