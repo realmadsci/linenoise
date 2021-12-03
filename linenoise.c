@@ -1880,6 +1880,10 @@ char *linenoiseWithInitial(const char *prompt, const char *initial)
         printf("%s", prompt);
         fflush(stdout);
         sb = sb_getline(stdin);
+        if (sb && !isatty(current.fd)) {
+            printf("%s\n", sb_str(sb));
+            fflush(stdout);
+        }
     }
     else {
         current.buf = sb_alloc();
