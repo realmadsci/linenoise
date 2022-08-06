@@ -27,9 +27,10 @@ int main(int argc, char *argv[]) {
     const char *prompt = "hello> ";
     char *line;
     char *prgname = argv[0];
+	const char *initial;
 
     /* Parse options, with --multiline we enable multi line editing. */
-    while(argc > 1) {
+    while(argc > 1 && argv[1][0] == '-') {
         argc--;
         argv++;
         if (!strcmp(*argv,"--multiline")) {
@@ -58,13 +59,16 @@ int main(int argc, char *argv[]) {
      * where entries are separated by newlines. */
     linenoiseHistoryLoad("history.txt"); /* Load the history at startup */
 
+	initial = (argc > 1) ? argv[1] : "";
+
     /* Now this is the main loop of the typical linenoise-based application.
      * The call to linenoise() will block as long as the user types something
      * and presses enter.
      *
      * The typed string is returned as a malloc() allocated string by
      * linenoise, so the user needs to free() it. */
-    while((line = linenoise(prompt)) != NULL) {
+    while((line = linenoiseWithInitial(prompt, initial)) != NULL) {
+		initial = "";
         /* Do something with the string. */
         if (line[0] != '\0' && line[0] != '/') {
             printf("echo: '%s'\n", line);

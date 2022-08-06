@@ -1583,11 +1583,6 @@ static int reverseIncrementalSearch(struct current *current)
 static int linenoiseEdit(struct current *current) {
     int history_index = 0;
 
-    /* The latest history entry is always our current buffer, that
-     * initially is just an empty string. */
-    linenoiseHistoryAdd("");
-
-    set_current(current, "");
     refreshLine(current);
 
     while(1) {
@@ -1871,7 +1866,7 @@ static stringbuf *sb_getline(FILE *fh)
     return sb;
 }
 
-char *linenoise(const char *prompt)
+char *linenoiseWithInitial(const char *prompt, const char *initial)
 {
     int count;
     struct current current;
@@ -1890,6 +1885,10 @@ char *linenoise(const char *prompt)
         current.nrows = 1;
         current.prompt = prompt;
 
+		/* The latest history entry is always our current buffer */
+		linenoiseHistoryAdd(initial);
+		set_current(&current, initial);
+
         count = linenoiseEdit(&current);
 
         disableRawMode(&current);
@@ -1903,6 +1902,11 @@ char *linenoise(const char *prompt)
         sb = current.buf;
     }
     return sb ? sb_to_string(sb) : NULL;
+}
+
+char *linenoise(const char *prompt)
+{
+	return linenoiseWithInitial(prompt, "");
 }
 
 /* Using a circular buffer is smarter, but a bit more complex to handle. */
