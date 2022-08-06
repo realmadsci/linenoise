@@ -151,7 +151,10 @@
 
 #define LINENOISE_DEFAULT_HISTORY_MAX_LEN 100
 
+/* ctrl('A') -> 0x01 */
 #define ctrl(C) ((C) - '@')
+/* meta('a') ->  0xe1 */
+#define meta(C) ((C) | 0x80)
 
 /* Use -ve numbers here to co-exist with normal unicode chars */
 enum {
@@ -683,6 +686,10 @@ static int check_special(int fd)
     if (c < 0) {
         return CHAR_ESCAPE;
     }
+	else if (c >= 'a' && c <= 'z') {
+		/* esc-a => meta-a */
+		return meta(c);
+	}
 
     c2 = fd_read_char(fd, 50);
     if (c2 < 0) {
@@ -1444,6 +1451,28 @@ static int insert_chars(struct current *current, int pos, const char *chars)
     return inserted;
 }
 
+static int skip_space_nonspace(struct current *current, int dir, int check_is_space)
+{
+    int moved = 0;
+    int checkoffset = (dir < 0) ? -1 : 0;
+    int limit = (dir < 0) ? 0 : sb_chars(current->buf);
+    while (current->pos != limit && (get_char(current, current->pos + checkoffset) == ' ') == check_is_space) {
+        current->pos += dir;
+        moved++;
+    }
+    return moved;
+}
+
+static int skip_space(struct current *current, int dir)
+{
+    return skip_space_nonspace(current, dir, 1);
+}
+
+static int skip_nonspace(struct current *current, int dir)
+{
+    return skip_space_nonspace(current, dir, 0);
+}
+
 /**
  * Returns the keycode to process, or 0 if none.
  */
@@ -1495,7 +1524,7 @@ static int reverseIncrementalSearch(struct current *current)
             searchdir = 1;
             skipsame = 1;
         }
-        else if (c >= ' ') {
+        else if (c >= ' ' && c <= '~') {
             /* >= here to allow for null terminator */
             if (rlen >= (int)sizeof(rbuf) - MAX_UTF8_LEN) {
                 continue;
@@ -1630,6 +1659,7 @@ static int linenoiseEdit(struct current *current) {
                 return -1;
             }
             /* Otherwise fall through to delete char to right of cursor */
+            /* fall-thru */
         case SPECIAL_DELETE:
             if (remove_char(current, current->pos) == 1) {
                 refreshLine(current);
@@ -1639,6 +1669,24 @@ static int linenoiseEdit(struct current *current) {
             /* Ignore. Expansion Hook.
              * Future possibility: Toggle Insert/Overwrite Modes
              */
+            break;
+        case meta('b'):    /* meta-b, move word left */
+            if (skip_nonspace(current, -1)) {
+                refreshLine(current);
+            }
+            else if (skip_space(current, -1)) {
+                skip_nonspace(current, -1);
+                refreshLine(current);
+            }
+            break;
+        case meta('f'):    /* meta-f, move word right */
+            if (skip_space(current, 1)) {
+                refreshLine(current);
+            }
+            else if (skip_nonspace(current, 1)) {
+                skip_space(current, 1);
+                refreshLine(current);
+            }
             break;
         case ctrl('W'):    /* ctrl-w, delete word at left. save deleted chars */
             /* eat any spaces on the left */
@@ -1762,6 +1810,10 @@ history_navigation:
             refreshLine(current);
             break;
         default:
+			if (c >= meta('a') && c <= meta('z')) {
+				/* Don't insert meta chars that are not bound */
+				break;
+			}
             /* Only tab is allowed without ^V */
             if (c == '\t' || c >= ' ') {
                 if (insert_char(current, current->pos, c) == 1) {
