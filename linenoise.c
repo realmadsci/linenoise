@@ -688,10 +688,10 @@ static int check_special(int fd)
     if (c < 0) {
         return CHAR_ESCAPE;
     }
-	else if (c >= 'a' && c <= 'z') {
-		/* esc-a => meta-a */
-		return meta(c);
-	}
+    else if (c >= 'a' && c <= 'z') {
+        /* esc-a => meta-a */
+        return meta(c);
+    }
 
     c2 = fd_read_char(fd, 50);
     if (c2 < 0) {
@@ -1807,10 +1807,10 @@ history_navigation:
             refreshLine(current);
             break;
         default:
-			if (c >= meta('a') && c <= meta('z')) {
-				/* Don't insert meta chars that are not bound */
-				break;
-			}
+            if (c >= meta('a') && c <= meta('z')) {
+                /* Don't insert meta chars that are not bound */
+                break;
+            }
             /* Only tab is allowed without ^V */
             if (c == '\t' || c >= ' ') {
                 if (insert_char(current, current->pos, c) == 1) {
@@ -1891,9 +1891,9 @@ char *linenoiseWithInitial(const char *prompt, const char *initial)
         current.nrows = 1;
         current.prompt = prompt;
 
-		/* The latest history entry is always our current buffer */
-		linenoiseHistoryAdd(initial);
-		set_current(&current, initial);
+        /* The latest history entry is always our current buffer */
+        linenoiseHistoryAdd(initial);
+        set_current(&current, initial);
 
         count = linenoiseEdit(&current);
 
@@ -1912,7 +1912,7 @@ char *linenoiseWithInitial(const char *prompt, const char *initial)
 
 char *linenoise(const char *prompt)
 {
-	return linenoiseWithInitial(prompt, "");
+    return linenoiseWithInitial(prompt, "");
 }
 
 /* Using a circular buffer is smarter, but a bit more complex to handle. */
