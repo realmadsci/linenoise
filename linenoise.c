@@ -222,6 +222,16 @@ static void setCursorPos(struct current *current, int x);
 static void setOutputHighlight(struct current *current, const int *props, int nprops);
 static void set_current(struct current *current, const char *str);
 
+static int fd_isatty(struct current *current)
+{
+#ifdef USE_TERMIOS
+    return isatty(current->fd);
+#else
+    (void)current;
+    return 0;
+#endif
+}
+
 void linenoiseHistoryFree(void) {
     if (history) {
         int j;
@@ -1880,7 +1890,7 @@ char *linenoiseWithInitial(const char *prompt, const char *initial)
         printf("%s", prompt);
         fflush(stdout);
         sb = sb_getline(stdin);
-        if (sb && !isatty(current.fd)) {
+        if (sb && !fd_isatty(&current)) {
             printf("%s\n", sb_str(sb));
             fflush(stdout);
         }
